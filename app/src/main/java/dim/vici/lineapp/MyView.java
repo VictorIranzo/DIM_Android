@@ -71,6 +71,10 @@ public class MyView extends View {
                 this.newX = -1;
                 this.newY = -1;
 
+                // Invalidates the view to show the drawn line.
+                // This line is required in order to remove the drawn line when the touch ends.
+                this.invalidate();
+
                 break;
         }
 
