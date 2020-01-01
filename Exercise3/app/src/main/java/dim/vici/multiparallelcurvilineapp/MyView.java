@@ -8,7 +8,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Random;
 
 public class MyView extends View {
@@ -19,13 +20,7 @@ public class MyView extends View {
     // Stores graphic properties of the drawn line.
     Paint paint = new Paint();
 
-    // Stores the initial and final position of the line.
-    float prevX, prevY, newX, newY;
-
-    // Stores the the color in which the line is drawn.
-    int color = Color.BLACK;
-
-    ArrayList<Line> lines = new ArrayList<Line>();
+    Hashtable<Integer, Line> lines = new Hashtable<Integer, Line>();
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,8 +36,13 @@ public class MyView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         // Solution found it in: https://stackoverflow.com/questions/16748146/android-canvas-drawline
-        for (Line line : lines)
+        for (Line line : lines.values())
         {
+            if (line.stopX == -1 || line.stopY == -1)
+            {
+                continue;
+            }
+
             // Establish the color in which the line is drawn.
             paint.setColor(line.color);
 
@@ -53,39 +53,43 @@ public class MyView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch(event.getAction())
-        {
-            case MotionEvent.ACTION_DOWN:
-                this.prevX = event.getX();
-                this.prevY = event.getY();
+        int pointerIndex = event.getPointerId(event.getActionIndex());
 
-                // Updates the color, that is an integer.
-                // It is only called there because it is the starting point of the drawing action.
-                this.color = randomNumberGenerator.nextInt();
+        switch(event.getActionMasked())
+        {
+            // Starts a new pointer (main or additional one).
+            case MotionEvent.ACTION_POINTER_DOWN:
+            case MotionEvent.ACTION_DOWN:
+                lines.put(pointerIndex, new Line(event.getX(pointerIndex), event.getY(pointerIndex), randomNumberGenerator.nextInt()));
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                this.newX = event.getX();
-                this.newY = event.getY();
+                for (Map.Entry<Integer, Line> lineEntry : lines.entrySet())
+                {
+                    try {
+                        Line endLine = lineEntry.getValue();
 
-                // Invalidates the view to show the drawn line.
-                this.invalidate();
+                        endLine.stopX = event.getX(lineEntry.getKey());
+                        endLine.stopY = event.getY(lineEntry.getKey());
 
+                        // Invalidates the view to remove the drawn line.
+                        this.invalidate();
+                    } catch (IllegalArgumentException args) {
+                    }
+                }
                 break;
+            // Ends a pointer (main or additional one).
+            case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_UP:
-                Line newLine = new Line(this.prevX, this.prevY, this.newX, this.newY, this.color);
-                lines.add(newLine);
-
-                this.prevX = -1;
-                this.prevY = -1;
-                this.newX = -1;
-                this.newY = -1;
+                // Removes the line.
+                lines.remove(pointerIndex);
 
                 // Invalidates the view to show the drawn line.
                 // This line is required in order to remove the drawn line when the touch ends.
                 this.invalidate();
 
                 break;
+
         }
 
         return true;
