@@ -38,16 +38,14 @@ public class MyView extends View {
         // Solution found it in: https://stackoverflow.com/questions/16748146/android-canvas-drawline
         for (Line line : lines.values())
         {
-            if (line.stopX == -1 || line.stopY == -1)
-            {
-                continue;
-            }
-
             // Establish the color in which the line is drawn.
             paint.setColor(line.color);
 
-            // Draws the line.
-            canvas.drawLine(line.startX, line.startY, line.stopX, line.stopY, this.paint);
+            for (Point point : line.points)
+            {
+                // Draws the line.
+                canvas.drawPoint(point.x, point.y, this.paint);
+            }
         }
     }
 
@@ -69,13 +67,12 @@ public class MyView extends View {
                     try {
                         Line endLine = lineEntry.getValue();
 
-                        endLine.stopX = event.getX(lineEntry.getKey());
-                        endLine.stopY = event.getY(lineEntry.getKey());
+                        endLine.points.add(new Point(event.getX(lineEntry.getKey()), event.getY(lineEntry.getKey())));
 
                         // Invalidates the view to remove the drawn line.
                         this.invalidate();
-                    } catch (IllegalArgumentException args) {
                     }
+                    catch (IllegalArgumentException args) {}
                 }
                 break;
             // Ends a pointer (main or additional one).

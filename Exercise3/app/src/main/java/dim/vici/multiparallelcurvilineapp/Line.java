@@ -1,15 +1,16 @@
 package dim.vici.multiparallelcurvilineapp;
 
+import java.util.ArrayList;
+
 public class Line {
-    float startX, startY, stopX, stopY;
+    ArrayList<Point> points;
+
     int color;
 
     public Line(float startX, float startY, int color) {
-        this.startX = startX;
-        this.startY = startY;
         this.color = color;
 
-        this.stopX = -1;
-        this.stopY = -1;
+        points = new ArrayList<Point>();
+        points.add(new Point(startX, startY));
     }
 }
