@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MyView extends View {
@@ -24,6 +25,8 @@ public class MyView extends View {
     // Stores the the color in which the line is drawn.
     int color = Color.BLACK;
 
+    ArrayList<Line> lines = new ArrayList<Line>();
+
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -37,11 +40,15 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Establish the color in which the line is drawn.
-        paint.setColor(this.color);
+        // Solution found it in: https://stackoverflow.com/questions/16748146/android-canvas-drawline
+        for (Line line : lines)
+        {
+            // Establish the color in which the line is drawn.
+            paint.setColor(line.color);
 
-        // Draws the line.
-        canvas.drawLine(this.prevX, this.prevY, this.newX,this.newY, this.paint);
+            // Draws the line.
+            canvas.drawLine(line.startX, line.startY, line.stopX, line.stopY, this.paint);
+        }
     }
 
     @Override
@@ -66,6 +73,9 @@ public class MyView extends View {
 
                 break;
             case MotionEvent.ACTION_UP:
+                Line newLine = new Line(this.prevX, this.prevY, this.newX, this.newY, this.color);
+                lines.add(newLine);
+
                 this.prevX = -1;
                 this.prevY = -1;
                 this.newX = -1;
