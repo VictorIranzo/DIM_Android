@@ -41,10 +41,13 @@ public class MyView extends View {
             // Establish the color in which the line is drawn.
             paint.setColor(line.color);
 
-            for (Point point : line.points)
+            for (int i = 0; i < line.points.size() - 1; i++)
             {
+                Point startPoint = line.points.get(i);
+                Point endPoint = line.points.get(i+1);
+
                 // Draws the line.
-                canvas.drawPoint(point.x, point.y, this.paint);
+                canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, this.paint);
             }
         }
     }
