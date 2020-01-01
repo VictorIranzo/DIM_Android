@@ -5,27 +5,32 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 public class MyView extends View {
 
-    // Generate random numbers.
-    Random randomNumberGenerator = new Random();
+    // Gesture detector.
+    GestureDetector detector;
+    ScaleGestureDetector scaleGestureDetector;
 
     // Stores graphic properties of the drawn line.
     Paint paint = new Paint();
 
-    // Stores the initial and final position of the line.
-    float prevX, prevY, newX, newY;
-
-    // Stores the the color in which the line is drawn.
-    int color = Color.BLACK;
+    ArrayList<Square> squares = new ArrayList<Square>();
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        GestureListener listener = new GestureListener(this);
+        ScaleGestureListener scaleGestureListener = new ScaleGestureListener();
+
+        detector = new GestureDetector(context, listener);
+        ////scaleGestureDetector = new ScaleGestureDetector(context, scaleGestureListener);
 
         // Establish the graphic properties of the draw.
         paint.setAntiAlias(true);
@@ -37,46 +42,23 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Establish the color in which the line is drawn.
-        paint.setColor(this.color);
+        for (Square square : squares) {
+            // Establish the color in which the line is drawn.
+            paint.setColor(square.color);
 
-        // Draws the line.
-        canvas.drawLine(this.prevX, this.prevY, this.newX,this.newY, this.paint);
+            // Draws the line.
+            canvas.drawRect(
+                square.centerX - square.radius,
+                square.centerY - square.radius,
+                square.centerX + square.radius,
+                square.centerY + square.radius,
+                this.paint);
+        }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch(event.getAction())
-        {
-            case MotionEvent.ACTION_DOWN:
-                this.prevX = event.getX();
-                this.prevY = event.getY();
-
-                // Updates the color, that is an integer.
-                // It is only called there because it is the starting point of the drawing action.
-                this.color = randomNumberGenerator.nextInt();
-
-                break;
-            case MotionEvent.ACTION_MOVE:
-                this.newX = event.getX();
-                this.newY = event.getY();
-
-                // Invalidates the view to show the drawn line.
-                this.invalidate();
-
-                break;
-            case MotionEvent.ACTION_UP:
-                this.prevX = -1;
-                this.prevY = -1;
-                this.newX = -1;
-                this.newY = -1;
-
-                // Invalidates the view to show the drawn line.
-                // This line is required in order to remove the drawn line when the touch ends.
-                this.invalidate();
-
-                break;
-        }
+        detector.onTouchEvent(event);
 
         return true;
     }
