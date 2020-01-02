@@ -61,29 +61,39 @@ public class MyView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         detector.onTouchEvent(event);
+
         scaleGestureDetector.onTouchEvent(event);
 
-        return true;
-    }
+        if (scaleGestureDetector.isInProgress())
+        {
+            return true;
+        }
 
-    Square draggedSquare = null;
-
-    @Override
-    public boolean onDragEvent(DragEvent event) {
         switch (event.getAction())
         {
-            case DragEvent.ACTION_DRAG_STARTED:
+            case MotionEvent.ACTION_DOWN:
                 draggedSquare = getSelectedSquare(event.getX(), event.getY());
 
+                // If the touch point is not in the diameter of the square, not drag.
+                if (draggedSquare == null || !draggedSquare.isPointInSquare(event.getX(), event.getY()))
+                {
+                    draggedSquare = null;
+                }
+
                 break;
-            case DragEvent.ACTION_DRAG_LOCATION:
+            case MotionEvent.ACTION_MOVE:
+                if (draggedSquare == null)
+                {
+                    return true;
+                }
+
                 draggedSquare.centerX = event.getX();
                 draggedSquare.centerY = event.getY();
 
                 this.invalidate();
 
                 break;
-            case DragEvent.ACTION_DRAG_ENDED:
+            case MotionEvent.ACTION_UP:
                 draggedSquare = null;
 
                 break;
@@ -91,6 +101,8 @@ public class MyView extends View {
 
         return true;
     }
+
+    Square draggedSquare = null;
 
     public Square getSelectedSquare(float focusX, float focusY) {
         float minDistance = Float.MAX_VALUE;
