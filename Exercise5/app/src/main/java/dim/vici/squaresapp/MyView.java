@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class MyView extends View {
 
-    // Gesture detector.
+    // Gesture detectors.
     GestureDetector detector;
     ScaleGestureDetector scaleGestureDetector;
 
@@ -26,11 +26,12 @@ public class MyView extends View {
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        // TODO: ¿Pass only the list and an action for refreshing?
         GestureListener listener = new GestureListener(this);
-        ScaleGestureListener scaleGestureListener = new ScaleGestureListener();
+        ScaleGestureListener scaleGestureListener = new ScaleGestureListener(this);
 
         detector = new GestureDetector(context, listener);
-        ////scaleGestureDetector = new ScaleGestureDetector(context, scaleGestureListener);
+        scaleGestureDetector = new ScaleGestureDetector(context, scaleGestureListener);
 
         // Establish the graphic properties of the draw.
         paint.setAntiAlias(true);
@@ -43,10 +44,10 @@ public class MyView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         for (Square square : squares) {
-            // Establish the color in which the line is drawn.
+            // Establish the color in which the rectangle is drawn.
             paint.setColor(square.color);
 
-            // Draws the line.
+            // Draws the rectangle.
             canvas.drawRect(
                 square.centerX - square.radius,
                 square.centerY - square.radius,
@@ -59,7 +60,36 @@ public class MyView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         detector.onTouchEvent(event);
+        scaleGestureDetector.onTouchEvent(event);
 
         return true;
+    }
+
+    public Square getSelectedSquare(float focusX, float focusY) {
+        float minDistance = Float.MAX_VALUE;
+        Square nearestSquare = null;
+
+        for(Square square : squares)
+        {
+            float distance = calculateDistanceBetweenPoints(focusX, focusY, square.centerX, square.centerY);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestSquare = square;
+            }
+        }
+
+        return nearestSquare;
+    }
+
+    // Code from: https://www.baeldung.com/java-distance-between-two-points
+    private static float calculateDistanceBetweenPoints(
+            float x1,
+            float y1,
+            float x2,
+            float y2)
+    {
+        return (float) Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
     }
 }
