@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -37,7 +38,7 @@ public class MyView extends View {
         paint.setAntiAlias(true);
         paint.setStrokeWidth(6f);
         paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
     }
 
@@ -61,6 +62,32 @@ public class MyView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         detector.onTouchEvent(event);
         scaleGestureDetector.onTouchEvent(event);
+
+        return true;
+    }
+
+    Square draggedSquare = null;
+
+    @Override
+    public boolean onDragEvent(DragEvent event) {
+        switch (event.getAction())
+        {
+            case DragEvent.ACTION_DRAG_STARTED:
+                draggedSquare = getSelectedSquare(event.getX(), event.getY());
+
+                break;
+            case DragEvent.ACTION_DRAG_LOCATION:
+                draggedSquare.centerX = event.getX();
+                draggedSquare.centerY = event.getY();
+
+                this.invalidate();
+
+                break;
+            case DragEvent.ACTION_DRAG_ENDED:
+                draggedSquare = null;
+
+                break;
+        }
 
         return true;
     }
