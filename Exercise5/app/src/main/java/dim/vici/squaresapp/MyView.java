@@ -50,9 +50,9 @@ public class MyView extends View {
             // Draws the rectangle.
             canvas.drawRect(
                 square.centerX - square.radius,
-                square.centerY - square.radius,
-                square.centerX + square.radius,
                 square.centerY + square.radius,
+                square.centerX + square.radius,
+                square.centerY - square.radius,
                 this.paint);
         }
     }
