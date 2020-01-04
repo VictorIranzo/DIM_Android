@@ -1,11 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
      <dim.vici.cubism.MyView
          android:id="@+id/myView1"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_centerHorizontal="true"
-         android:layout_centerVertical="true"/>
-</RelativeLayout>
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_weight="1" />
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_weight="10"
+         android:orientation="horizontal">
+          <ImageButton
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:src="@drawable/ic_draw_free"/>
+         <ImageButton
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:src="@drawable/ic_square"/>
+         <ImageButton
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:src="@drawable/ic_free_figure"/>
+         <ImageButton
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:src="@drawable/ic_colors"/>
+     </LinearLayout>
+</LinearLayout>
