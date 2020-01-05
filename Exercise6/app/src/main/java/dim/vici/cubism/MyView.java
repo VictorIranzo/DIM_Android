@@ -21,6 +21,7 @@ public class MyView extends View {
     public TypeDraw TypeDraw = dim.vici.cubism.TypeDraw.SQUARES;
     public int SelectedColor = android.graphics.Color.BLACK;
     public boolean useStroke;
+    public Drawable painting;
 
     // Gesture detectors.
     GestureDetector detector;
@@ -69,14 +70,10 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        /*
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+        if (painting != null)
         {
-            Drawable image = getResources().getDrawable(R.drawable.picasso, null);
-            image.setBounds(this.getLeft(), this.getTop(), this.getRight(), this.getBottom());
-            image.draw(canvas);
+            painting.draw(canvas);
         }
-        */
 
         drawSquares(canvas);
 

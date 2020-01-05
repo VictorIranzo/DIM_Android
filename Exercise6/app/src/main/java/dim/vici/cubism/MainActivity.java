@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,12 +87,12 @@ public class MainActivity extends AppCompatActivity {
     private void ShowSelectorBackground() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice);
-        arrayAdapter.add(getString(R.string.none));
-        arrayAdapter.add(getString(R.string.mondrian));
-        arrayAdapter.add(getString(R.string.picasso));
-        arrayAdapter.add(getString(R.string.braque));
-        arrayAdapter.add(getString(R.string.gris));
+        final ArrayAdapter<Painting> arrayAdapter = new ArrayAdapter<Painting>(this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add(new Painting(R.string.none, getString(R.string.none)));
+        arrayAdapter.add(new Painting(R.string.mondrian, getString(R.string.mondrian)));
+        arrayAdapter.add(new Painting(R.string.picasso, getString(R.string.picasso)));
+        arrayAdapter.add(new Painting(R.string.braque, getString(R.string.braque)));
+        arrayAdapter.add(new Painting(R.string.gris, getString(R.string.gris)));
 
         builderSingle.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
@@ -103,16 +104,40 @@ public class MainActivity extends AppCompatActivity {
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String strName = arrayAdapter.getItem(which);
-                AlertDialog.Builder builderInner = new AlertDialog.Builder(canvasView.getContext());
-                builderInner.setMessage(strName);
-                builderInner.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog,int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builderInner.show();
+                Painting itemSelected = arrayAdapter.getItem(which);
+                int resourceId = -1;
+
+                switch (itemSelected.id)
+                {
+                    case R.string.none:
+                        break;
+                    case R.string.mondrian:
+                        resourceId = R.drawable.mondrian;
+                        break;
+                    case R.string.picasso:
+                        resourceId = R.drawable.picasso;
+                        break;
+                    case R.string.braque:
+                        resourceId = R.drawable.braque;
+                        break;
+                    case R.string.gris:
+                        resourceId = R.drawable.gris;
+                        break;
+                }
+
+                if (resourceId == -1)
+                {
+                    canvasView.painting = null;
+                }
+                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+                {
+                    Drawable image = getResources().getDrawable(resourceId, null);
+                    image.setBounds(canvasView.getLeft(), canvasView.getTop(), canvasView.getRight(), canvasView.getBottom());
+
+                    canvasView.painting = image;
+                }
+
+                canvasView.invalidate();
             }
         });
         builderSingle.show();
