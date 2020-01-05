@@ -69,12 +69,14 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        /*
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
         {
             Drawable image = getResources().getDrawable(R.drawable.picasso, null);
             image.setBounds(this.getLeft(), this.getTop(), this.getRight(), this.getBottom());
             image.draw(canvas);
         }
+        */
 
         drawSquares(canvas);
 

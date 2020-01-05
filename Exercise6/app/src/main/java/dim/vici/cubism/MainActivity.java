@@ -1,9 +1,15 @@
 package dim.vici.cubism;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -58,5 +64,57 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show(getSupportFragmentManager(), "dialog");
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.set_Background:
+                ShowSelectorBackground();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void ShowSelectorBackground() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add(getString(R.string.none));
+        arrayAdapter.add(getString(R.string.mondrian));
+        arrayAdapter.add(getString(R.string.picasso));
+        arrayAdapter.add(getString(R.string.braque));
+        arrayAdapter.add(getString(R.string.gris));
+
+        builderSingle.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strName = arrayAdapter.getItem(which);
+                AlertDialog.Builder builderInner = new AlertDialog.Builder(canvasView.getContext());
+                builderInner.setMessage(strName);
+                builderInner.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builderInner.show();
+            }
+        });
+        builderSingle.show();
     }
 }

@@ -7,4 +7,10 @@
     <string name="cancel">Cancel</string>
     <string name="useStroke">Use stroke? \t</string>
     <string name="strokeWidth">Stroke width \t</string>
+    <string name="setBackground">Set background</string>
+    <string name="none">None</string>
+    <string name="mondrian">Piet Mondrian - Composition with Large Red Plane, Yellow, Black, Grey and Blue</string>
+    <string name="picasso">Pablo Picasso - Three musicians</string>
+    <string name="gris">Juan Gris - The painter\'s window</string>
+    <string name="braque">Georges Braque - Bottle and fruits</string>
 </resources>
