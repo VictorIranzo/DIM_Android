@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -14,6 +13,8 @@ import android.view.View;
 import java.util.ArrayList;
 
 public class MyView extends View {
+
+    public TypeDraw TypeDraw = dim.vici.cubism.TypeDraw.SQUARES;
 
     // Gesture detectors.
     GestureDetector detector;
@@ -60,30 +61,44 @@ public class MyView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        switch(this.TypeDraw)
+        {
+            case FREE:
+                return onTouchFreeDraw();
+            case SQUARES:
+                return onTouchSquares(event);
+            case FIGURE:
+                return onTouchFigure();
+        }
+
+        return true;
+    }
+
+    private boolean onTouchFreeDraw() {
+        return false;
+    }
+
+    private boolean onTouchSquares(MotionEvent event) {
         detector.onTouchEvent(event);
 
         scaleGestureDetector.onTouchEvent(event);
 
-        if (scaleGestureDetector.isInProgress())
-        {
+        if (scaleGestureDetector.isInProgress()) {
             return true;
         }
 
-        switch (event.getAction())
-        {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 draggedSquare = getSelectedSquare(event.getX(), event.getY());
 
                 // If the touch point is not in the diameter of the square, not drag.
-                if (draggedSquare == null || !draggedSquare.isPointInSquare(event.getX(), event.getY()))
-                {
+                if (draggedSquare == null || !draggedSquare.isPointInSquare(event.getX(), event.getY())) {
                     draggedSquare = null;
                 }
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (draggedSquare == null)
-                {
+                if (draggedSquare == null) {
                     return true;
                 }
 
@@ -100,6 +115,10 @@ public class MyView extends View {
         }
 
         return true;
+    }
+
+    private boolean onTouchFigure() {
+        return false;
     }
 
     Square draggedSquare = null;

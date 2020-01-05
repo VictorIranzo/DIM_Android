@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
     <view
-        android:id="@+id/viewlayout"
+        android:id="@+id/viewInstance"
         class="dim.vici.cubism.MyView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,21 +18,25 @@
         android:layout_weight="10"
         android:orientation="horizontal">
         <ImageButton
+            android:id="@+id/draw_free_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_draw_free"/>
         <ImageButton
+            android:id="@+id/draw_squares_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_square"/>
         <ImageButton
+            android:id="@+id/draw_free_figure_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_free_figure"/>
         <ImageButton
+            android:id="@+id/colors_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
