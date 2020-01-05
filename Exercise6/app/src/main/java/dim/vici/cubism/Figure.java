@@ -44,4 +44,19 @@ public class Figure {
     public boolean isClosingFigure(Point point) {
         return firstPoint.calculateDistanceToPoint(point) < 40;
     }
+
+    public boolean isPointInFigure(Point pointToCheck)
+    {
+        // Code from: https://stackoverflow.com/questions/8721406/how-to-determine-if-a-point-is-inside-a-2d-convex-polygon
+        int i, j;
+        boolean result = false;
+
+        for (i = 0, j = points.size() - 1; i < points.size(); j = i++) {
+            if ((points.get(i).y > pointToCheck.y) != (points.get(j).y > pointToCheck.y) &&
+                    (pointToCheck.x < (points.get(j).x - points.get(i).x) * (pointToCheck.y - points.get(i).y) / (points.get(j).y - points.get(i).y) + points.get(i).x)) {
+                result = !result;
+            }
+        }
+        return result;
+    }
 }

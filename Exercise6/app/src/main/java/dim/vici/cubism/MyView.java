@@ -24,6 +24,9 @@ public class MyView extends View {
     public int strokeWidth;
     public Drawable painting;
 
+    Square draggedSquare = null;
+    Figure draggedFigure = null;
+
     // Gesture detectors.
     GestureDetector detector;
     ScaleGestureDetector scaleGestureDetector;
@@ -88,11 +91,17 @@ public class MyView extends View {
     private void drawFigures(Canvas canvas) {
         if (figureInProcess != null)
         {
-            canvas.drawPoint(figureInProcess.firstPoint.x, figureInProcess.firstPoint.y, this.paintForFigureFirstPoint);
-
-            for (Point point : figureInProcess.points)
+            if (this.TypeDraw != dim.vici.cubism.TypeDraw.FIGURE)
             {
-                canvas.drawPoint(point.x, point.y, this.paint);
+               figureInProcess = null;
+            }
+            else
+            {
+                canvas.drawPoint(figureInProcess.firstPoint.x, figureInProcess.firstPoint.y, this.paintForFigureFirstPoint);
+
+                for (Point point : figureInProcess.points) {
+                    canvas.drawPoint(point.x, point.y, this.paint);
+                }
             }
         }
 
@@ -260,7 +269,32 @@ public class MyView extends View {
     private boolean onTouchFigure(MotionEvent event) {
         switch (event.getAction())
         {
+            case MotionEvent.ACTION_DOWN:
+                // Only when there is no figure in process, checks if there is a dragging action.
+                if (figureInProcess == null)
+                {
+                    draggedFigure= getSelectedFigure(event.getX(), event.getY());
+                }
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (draggedFigure == null) {
+                    return true;
+                }
+
+                // TODO: Update.
+
+                this.invalidate();
+
+                break;
             case MotionEvent.ACTION_UP:
+                if (draggedFigure != null)
+                {
+                    draggedFigure = null;
+
+                    return true;
+                }
+
                 Point point = new Point(event.getX(), event.getY());
 
                 if (figureInProcess == null)
@@ -288,7 +322,20 @@ public class MyView extends View {
         return true;
     }
 
-    Square draggedSquare = null;
+    public Figure getSelectedFigure(float focusX, float focusY)
+    {
+        Point focusPoint = new Point(focusX, focusY);
+
+        for (Figure figure : figuresFinished)
+        {
+            if (figure.isPointInFigure(focusPoint))
+            {
+                return figure;
+            }
+        }
+
+        return null;
+    }
 
     public Square getSelectedSquare(float focusX, float focusY) {
         float minDistance = Float.MAX_VALUE;
