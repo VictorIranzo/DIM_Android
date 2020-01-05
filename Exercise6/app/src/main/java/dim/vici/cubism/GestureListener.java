@@ -14,7 +14,7 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onDoubleTap(MotionEvent e) {
         view.squares.add(
-            new Square(new Point(e.getX(), e.getY()), 50, view.SelectedColor, view.useStroke));
+            new Square(new Point(e.getX(), e.getY()), 50, view.SelectedColor, view.useStroke, view.strokeWidth));
 
         view.invalidate();
 

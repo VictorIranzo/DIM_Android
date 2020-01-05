@@ -21,6 +21,7 @@ public class MyView extends View {
     public TypeDraw TypeDraw = dim.vici.cubism.TypeDraw.SQUARES;
     public int SelectedColor = android.graphics.Color.BLACK;
     public boolean useStroke;
+    public int strokeWidth;
     public Drawable painting;
 
     // Gesture detectors.
@@ -61,6 +62,7 @@ public class MyView extends View {
         paintForFigureFirstPoint.setStrokeWidth(12f);
 
         useStroke = false;
+        strokeWidth = 6;
 
         paintForStroke.setStrokeWidth(6f);
         paintForStroke.setStyle(Paint.Style.STROKE);
@@ -96,10 +98,13 @@ public class MyView extends View {
 
         for(Figure figure : figuresFinished)
         {
+            this.paint.setColor(figure.color);
+
             drawFigure(canvas, figure, this.paint);
 
             if (figure.useStroke)
             {
+                this.paintForStroke.setStrokeWidth(figure.strokeWidth);
                 drawFigure(canvas, figure, this.paintForStroke);
             }
         }
@@ -115,6 +120,7 @@ public class MyView extends View {
         {
             // Establish the color in which the line is drawn.
             paint.setColor(line.color);
+            paint.setStrokeWidth(line.strokeWidth);
 
             for (int i = 0; i < line.points.size() - 1; i++)
             {
@@ -131,12 +137,15 @@ public class MyView extends View {
         for (Square square : squares) {
             // Establish the color in which the rectangle is drawn.
             paint.setColor(square.color);
+            paint.setStrokeWidth(6);
 
             // Draws the rectangle.
             this.drawSquare(canvas, square, this.paint);
 
             if (square.useStroke)
             {
+                this.paintForStroke.setStrokeWidth(square.strokeWidth);
+
                 this.drawSquare(canvas, square, this.paintForStroke);
             }
         }
@@ -174,7 +183,7 @@ public class MyView extends View {
             // Starts a new pointer (main or additional one).
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_DOWN:
-                linesInProcess.put(pointerIndex, new Line(event.getX(pointerIndex), event.getY(pointerIndex), this.SelectedColor));
+                linesInProcess.put(pointerIndex, new Line(event.getX(pointerIndex), event.getY(pointerIndex), this.SelectedColor, this.strokeWidth));
 
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -256,7 +265,7 @@ public class MyView extends View {
 
                 if (figureInProcess == null)
                 {
-                    figureInProcess = new Figure(point, this.useStroke);
+                    figureInProcess = new Figure(point, this.SelectedColor, this.useStroke, this.strokeWidth);
                 }
                 else
                 {

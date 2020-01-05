@@ -52,6 +52,7 @@ public class ColorAndStyleDialog extends DialogFragment {
                 if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP){
                     // Since the dialog is set as not cancelable, but we still want the normal behaviour for the back button
                     dismiss();
+
                     return true;
                 }
                 return false;
@@ -78,9 +79,7 @@ public class ColorAndStyleDialog extends DialogFragment {
                 configuredPaint.setColor(colorPickerView.getSelectedColor());
 
                 canvasView.useStroke = useStrokeCheckBox.isChecked();
-
-                configuredPaint.setStrokeWidth(strokeWidthBar.getProgress());
-                canvasView.paintForStroke.setStrokeWidth(strokeWidthBar.getProgress());
+                canvasView.strokeWidth = strokeWidthBar.getProgress();
 
                 canvasView.setColorAndStyle(configuredPaint);
             }

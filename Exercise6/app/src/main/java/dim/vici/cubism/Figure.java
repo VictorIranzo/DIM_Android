@@ -8,12 +8,17 @@ public class Figure {
     ArrayList<Point> points;
     Point firstPoint;
     boolean useStroke;
+    int strokeWidth;
+    int color;
 
-    public Figure(Point firstPoint, boolean useStroke)
+    public Figure(Point firstPoint, int color, boolean useStroke, int strokeWidth)
     {
         this.firstPoint = firstPoint;
         points = new ArrayList<Point>();
+
+        this.color = color;
         this.useStroke = useStroke;
+        this.strokeWidth = strokeWidth;
     }
 
     public Path getPath()
