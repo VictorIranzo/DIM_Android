@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -68,6 +69,13 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+        {
+            Drawable image = getResources().getDrawable(R.drawable.picasso, null);
+            image.setBounds(this.getLeft(), this.getTop(), this.getRight(), this.getBottom());
+            image.draw(canvas);
+        }
+
         drawSquares(canvas);
 
         drawLines(canvas, linesInProcess.values());
