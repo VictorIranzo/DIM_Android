@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ public class ColorAndStyleDialog extends DialogFragment {
     private View parent;
     private ColorPickerView colorPickerView;
     private Paint configuredPaint;
+    private SeekBar strokeWidthBar;
 
     public ColorAndStyleDialog()
     {
@@ -55,16 +57,21 @@ public class ColorAndStyleDialog extends DialogFragment {
 
         parent = getActivity().getLayoutInflater().inflate(R.layout.color_and_style_dialog, null);
 
-        colorPickerView = parent.findViewById(R.id.color_picker_view);
-
         // Configures the paint with the values in the Canvas view.
         configuredPaint = ((MainActivity)getActivity()).canvasView.paint;
+
+        colorPickerView = parent.findViewById(R.id.color_picker_view);
+        strokeWidthBar = parent.findViewById(R.id.strokeWidthBar);
+
+        strokeWidthBar.setProgress((int)configuredPaint.getStrokeWidth());
 
         builder.setView(parent);
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 configuredPaint.setColor(colorPickerView.getSelectedColor());
+                configuredPaint.setStrokeWidth(strokeWidthBar.getProgress());
+                
                 ((MainActivity)getActivity()).canvasView.setColorAndStyle(configuredPaint);
             }
         });
