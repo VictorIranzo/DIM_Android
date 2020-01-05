@@ -19,6 +19,7 @@ public class MyView extends View {
 
     public TypeDraw TypeDraw = dim.vici.cubism.TypeDraw.SQUARES;
     public int SelectedColor = android.graphics.Color.BLACK;
+    public boolean useStroke;
 
     // Gesture detectors.
     GestureDetector detector;
@@ -26,8 +27,8 @@ public class MyView extends View {
 
     // Stores graphic properties of the drawn line.
     Paint paint = new Paint();
-
     Paint paintForFigureFirstPoint = new Paint();
+    Paint paintForStroke = new Paint();
 
     Hashtable<Integer, Line> linesInProcess = new Hashtable<Integer, Line>();
     ArrayList<Line> linesFinished = new ArrayList<Line>();
@@ -56,6 +57,13 @@ public class MyView extends View {
 
         paintForFigureFirstPoint.setColor(Color.RED);
         paintForFigureFirstPoint.setStrokeWidth(12f);
+
+        useStroke = false;
+
+        paintForStroke.setStrokeWidth(6f);
+        paintForStroke.setStyle(Paint.Style.STROKE);
+        paintForStroke.setColor(Color.BLACK);
+        paintForStroke.setStrokeCap(Paint.Cap.ROUND);
     }
 
     @Override
@@ -81,8 +89,17 @@ public class MyView extends View {
 
         for(Figure figure : figuresFinished)
         {
-            canvas.drawPath(figure.getPath(), this.paint);
+            drawFigure(canvas, figure, this.paint);
+
+            if (figure.useStroke)
+            {
+                drawFigure(canvas, figure, this.paintForStroke);
+            }
         }
+    }
+
+    private void drawFigure(Canvas canvas, Figure figure, Paint paint) {
+        canvas.drawPath(figure.getPath(), paint);
     }
 
     private void drawLines(Canvas canvas, Collection<Line> linesToDraw) {
@@ -109,13 +126,22 @@ public class MyView extends View {
             paint.setColor(square.color);
 
             // Draws the rectangle.
-            canvas.drawRect(
-                square.center.x - square.radius,
-                square.center.y + square.radius,
-                square.center.x + square.radius,
-                square.center.y - square.radius,
-                this.paint);
+            this.drawSquare(canvas, square, this.paint);
+
+            if (square.useStroke)
+            {
+                this.drawSquare(canvas, square, this.paintForStroke);
+            }
         }
+    }
+
+    private void drawSquare(Canvas canvas, Square square, Paint paint) {
+        canvas.drawRect(
+            square.center.x - square.radius,
+            square.center.y + square.radius,
+            square.center.x + square.radius,
+            square.center.y - square.radius,
+            paint);
     }
 
     @Override
@@ -223,7 +249,7 @@ public class MyView extends View {
 
                 if (figureInProcess == null)
                 {
-                    figureInProcess = new Figure(point);
+                    figureInProcess = new Figure(point, this.useStroke);
                 }
                 else
                 {

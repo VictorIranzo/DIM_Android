@@ -7,11 +7,13 @@ import java.util.ArrayList;
 public class Figure {
     ArrayList<Point> points;
     Point firstPoint;
+    boolean useStroke;
 
-    public Figure(Point firstPoint)
+    public Figure(Point firstPoint, boolean useStroke)
     {
         this.firstPoint = firstPoint;
         points = new ArrayList<Point>();
+        this.useStroke = useStroke;
     }
 
     public Path getPath()

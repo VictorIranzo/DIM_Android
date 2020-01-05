@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
@@ -17,9 +18,11 @@ import com.flask.colorpicker.ColorPickerView;
 
 public class ColorAndStyleDialog extends DialogFragment {
     private View parent;
+    private MyView canvasView;
     private ColorPickerView colorPickerView;
     private Paint configuredPaint;
     private SeekBar strokeWidthBar;
+    private CheckBox useStrokeCheckBox;
 
     public ColorAndStyleDialog()
     {
@@ -56,23 +59,30 @@ public class ColorAndStyleDialog extends DialogFragment {
         });
 
         parent = getActivity().getLayoutInflater().inflate(R.layout.color_and_style_dialog, null);
+        canvasView = ((MainActivity)getActivity()).canvasView;
 
         // Configures the paint with the values in the Canvas view.
-        configuredPaint = ((MainActivity)getActivity()).canvasView.paint;
+        configuredPaint = canvasView.paint;
 
         colorPickerView = parent.findViewById(R.id.color_picker_view);
         strokeWidthBar = parent.findViewById(R.id.strokeWidthBar);
+        useStrokeCheckBox = parent.findViewById(R.id.useStrokeCheckBox);
 
         strokeWidthBar.setProgress((int)configuredPaint.getStrokeWidth());
+        useStrokeCheckBox.setChecked(canvasView.useStroke);
 
         builder.setView(parent);
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 configuredPaint.setColor(colorPickerView.getSelectedColor());
+
+                canvasView.useStroke = useStrokeCheckBox.isChecked();
+
                 configuredPaint.setStrokeWidth(strokeWidthBar.getProgress());
-                
-                ((MainActivity)getActivity()).canvasView.setColorAndStyle(configuredPaint);
+                canvasView.paintForStroke.setStrokeWidth(strokeWidthBar.getProgress());
+
+                canvasView.setColorAndStyle(configuredPaint);
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
