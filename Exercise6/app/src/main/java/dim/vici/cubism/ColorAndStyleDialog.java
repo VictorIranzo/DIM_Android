@@ -69,7 +69,7 @@ public class ColorAndStyleDialog extends DialogFragment {
         strokeWidthBar = parent.findViewById(R.id.strokeWidthBar);
         useStrokeCheckBox = parent.findViewById(R.id.useStrokeCheckBox);
 
-        strokeWidthBar.setProgress((int)configuredPaint.getStrokeWidth());
+        strokeWidthBar.setProgress(canvasView.strokeWidth);
         useStrokeCheckBox.setChecked(canvasView.useStroke);
 
         builder.setView(parent);
