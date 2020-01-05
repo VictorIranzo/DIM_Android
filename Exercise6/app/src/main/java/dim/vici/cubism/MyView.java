@@ -267,4 +267,9 @@ public class MyView extends View {
 
         return nearestSquare;
     }
+
+    public void setColorAndStyle(Paint configuredPaint) {
+        this.SelectedColor = configuredPaint.getColor();
+        this.paint = configuredPaint;
+    }
 }

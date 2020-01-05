@@ -48,5 +48,15 @@ public class MainActivity extends AppCompatActivity {
                 canvasView.TypeDraw = TypeDraw.FIGURE;
             }
         });
+
+        colorsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ColorAndStyleDialog dialog = ColorAndStyleDialog.newInstance();
+                dialog.setCancelable(false);
+
+                dialog.show(getSupportFragmentManager(), "dialog");
+            }
+        });
     }
 }

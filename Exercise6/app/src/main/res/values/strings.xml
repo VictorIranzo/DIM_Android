@@ -3,4 +3,6 @@
     <string name="draw_free">Free line drawing</string>
     <string name="draw_squares">Squares drawing</string>
     <string name="draw_figures">Figures drawing</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
