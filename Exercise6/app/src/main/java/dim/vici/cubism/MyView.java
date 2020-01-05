@@ -104,13 +104,14 @@ public class MyView extends View {
 
             if (figure.useStroke)
             {
-                this.paintForStroke.setStrokeWidth(figure.strokeWidth);
                 drawFigure(canvas, figure, this.paintForStroke);
             }
         }
     }
 
     private void drawFigure(Canvas canvas, Figure figure, Paint paint) {
+        paint.setStrokeWidth(figure.strokeWidth);
+
         canvas.drawPath(figure.getPath(), paint);
     }
 
@@ -137,21 +138,20 @@ public class MyView extends View {
         for (Square square : squares) {
             // Establish the color in which the rectangle is drawn.
             paint.setColor(square.color);
-            paint.setStrokeWidth(6);
 
             // Draws the rectangle.
             this.drawSquare(canvas, square, this.paint);
 
             if (square.useStroke)
             {
-                this.paintForStroke.setStrokeWidth(square.strokeWidth);
-
                 this.drawSquare(canvas, square, this.paintForStroke);
             }
         }
     }
 
     private void drawSquare(Canvas canvas, Square square, Paint paint) {
+        paint.setStrokeWidth(square.strokeWidth);
+
         canvas.drawRect(
             square.center.x - square.radius,
             square.center.y + square.radius,
