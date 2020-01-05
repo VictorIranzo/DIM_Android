@@ -8,9 +8,6 @@ import java.util.Random;
 public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     private MyView view;
 
-    // Generate random numbers.
-    Random randomNumberGenerator = new Random();
-
     public GestureListener(MyView view)
     {
         this.view = view;
@@ -19,7 +16,7 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onDoubleTap(MotionEvent e) {
         view.squares.add(
-            new Square(e.getX(), e.getY(), 50, randomNumberGenerator.nextInt()));
+            new Square(e.getX(), e.getY(), 50, view.Color));
 
         view.invalidate();
 
