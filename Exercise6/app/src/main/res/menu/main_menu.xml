@@ -4,4 +4,8 @@
         android:id="@+id/set_Background"
         android:orderInCategory="1"
         android:title="@string/setBackground" />
+    <item
+        android:id="@+id/save_Image"
+        android:orderInCategory="2"
+        android:title="@string/saveImage" />
 </menu>

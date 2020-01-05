@@ -13,4 +13,5 @@
     <string name="picasso">Pablo Picasso - Three musicians</string>
     <string name="gris">Juan Gris - The painter\'s window</string>
     <string name="braque">Georges Braque - Bottle and fruits</string>
+    <string name="saveImage">Save image</string>
 </resources>
