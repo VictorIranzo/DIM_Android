@@ -2,6 +2,7 @@ package dim.vici.cubism;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -9,7 +10,6 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class MyView extends View {
 
     public TypeDraw TypeDraw = dim.vici.cubism.TypeDraw.SQUARES;
-    public int Color = android.graphics.Color.BLACK;
+    public int SelectedColor = android.graphics.Color.BLACK;
 
     // Gesture detectors.
     GestureDetector detector;
@@ -27,9 +27,15 @@ public class MyView extends View {
     // Stores graphic properties of the drawn line.
     Paint paint = new Paint();
 
+    Paint paintForFigureFirstPoint = new Paint();
+
     Hashtable<Integer, Line> linesInProcess = new Hashtable<Integer, Line>();
     ArrayList<Line> linesFinished = new ArrayList<Line>();
+
     ArrayList<Square> squares = new ArrayList<Square>();
+
+    ArrayList<Figure> figuresFinished = new ArrayList<Figure>();
+    Figure figureInProcess;
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -44,9 +50,12 @@ public class MyView extends View {
         // Establish the graphic properties of the draw.
         paint.setAntiAlias(true);
         paint.setStrokeWidth(6f);
-        paint.setColor(this.Color);
+        paint.setColor(this.SelectedColor);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
+
+        paintForFigureFirstPoint.setColor(Color.RED);
+        paintForFigureFirstPoint.setStrokeWidth(12f);
     }
 
     @Override
@@ -55,6 +64,25 @@ public class MyView extends View {
 
         drawLines(canvas, linesInProcess.values());
         drawLines(canvas, linesFinished);
+
+        drawFigures(canvas);
+    }
+
+    private void drawFigures(Canvas canvas) {
+        if (figureInProcess != null)
+        {
+            canvas.drawPoint(figureInProcess.firstPoint.x, figureInProcess.firstPoint.y, this.paintForFigureFirstPoint);
+
+            for (Point point : figureInProcess.points)
+            {
+                canvas.drawPoint(point.x, point.y, this.paint);
+            }
+        }
+
+        for(Figure figure : figuresFinished)
+        {
+            canvas.drawPath(figure.getPath(), this.paint);
+        }
     }
 
     private void drawLines(Canvas canvas, Collection<Line> linesToDraw) {
@@ -82,10 +110,10 @@ public class MyView extends View {
 
             // Draws the rectangle.
             canvas.drawRect(
-                square.centerX - square.radius,
-                square.centerY + square.radius,
-                square.centerX + square.radius,
-                square.centerY - square.radius,
+                square.center.x - square.radius,
+                square.center.y + square.radius,
+                square.center.x + square.radius,
+                square.center.y - square.radius,
                 this.paint);
         }
     }
@@ -99,7 +127,7 @@ public class MyView extends View {
             case SQUARES:
                 return onTouchSquares(event);
             case FIGURE:
-                return onTouchFigure();
+                return onTouchFigure(event);
         }
 
         return true;
@@ -113,7 +141,7 @@ public class MyView extends View {
             // Starts a new pointer (main or additional one).
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_DOWN:
-                linesInProcess.put(pointerIndex, new Line(event.getX(pointerIndex), event.getY(pointerIndex), this.Color));
+                linesInProcess.put(pointerIndex, new Line(event.getX(pointerIndex), event.getY(pointerIndex), this.SelectedColor));
 
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -172,8 +200,8 @@ public class MyView extends View {
                     return true;
                 }
 
-                draggedSquare.centerX = event.getX();
-                draggedSquare.centerY = event.getY();
+                draggedSquare.center.x = event.getX();
+                draggedSquare.center.y = event.getY();
 
                 this.invalidate();
 
@@ -187,8 +215,35 @@ public class MyView extends View {
         return true;
     }
 
-    private boolean onTouchFigure() {
-        return false;
+    private boolean onTouchFigure(MotionEvent event) {
+        switch (event.getAction())
+        {
+            case MotionEvent.ACTION_UP:
+                Point point = new Point(event.getX(), event.getY());
+
+                if (figureInProcess == null)
+                {
+                    figureInProcess = new Figure(point);
+                }
+                else
+                {
+                    if (figureInProcess.isClosingFigure(point))
+                    {
+                        figuresFinished.add(figureInProcess);
+                        figureInProcess = null;
+                    }
+                    else
+                    {
+                        figureInProcess.points.add(point);
+                    }
+                }
+
+                this.invalidate();
+
+                break;
+        }
+
+        return true;
     }
 
     Square draggedSquare = null;
@@ -197,9 +252,11 @@ public class MyView extends View {
         float minDistance = Float.MAX_VALUE;
         Square nearestSquare = null;
 
+        Point focusPoint = new Point(focusX, focusY);
+
         for(Square square : squares)
         {
-            float distance = calculateDistanceBetweenPoints(focusX, focusY, square.centerX, square.centerY);
+            float distance = focusPoint.calculateDistanceToPoint(square.center);
 
             if (distance < minDistance)
             {
@@ -209,15 +266,5 @@ public class MyView extends View {
         }
 
         return nearestSquare;
-    }
-
-    // Code from: https://www.baeldung.com/java-distance-between-two-points
-    private static float calculateDistanceBetweenPoints(
-            float x1,
-            float y1,
-            float x2,
-            float y2)
-    {
-        return (float) Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
     }
 }

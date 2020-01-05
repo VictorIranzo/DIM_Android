@@ -3,8 +3,6 @@ package dim.vici.cubism;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import java.util.Random;
-
 public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     private MyView view;
 
@@ -16,7 +14,7 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onDoubleTap(MotionEvent e) {
         view.squares.add(
-            new Square(e.getX(), e.getY(), 50, view.Color));
+            new Square(new Point(e.getX(), e.getY()), 50, view.SelectedColor));
 
         view.invalidate();
 
