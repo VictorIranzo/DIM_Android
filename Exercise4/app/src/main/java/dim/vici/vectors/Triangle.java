@@ -47,13 +47,8 @@ public class Triangle {
         return TriangleType.Scalene;
     }
 
-    public Triangle TransformToIsosceles()
+    public Line GetOrientedLine()
     {
-        if (this.getTriangleType() != TriangleType.Scalene)
-        {
-            return this;
-        }
-
         float distanceP1toP2 = this.p1.calculateDistanceToPoint(p2);
         float distanceP2toP3 = this.p2.calculateDistanceToPoint(p3);
         float distanceP3toP1 = this.p3.calculateDistanceToPoint(p1);
@@ -62,30 +57,28 @@ public class Triangle {
         float differencesBetweenSegmentsOfP2 = Math.abs(distanceP1toP2 - distanceP2toP3);
         float differencesBetweenSegmentsOfP3 = Math.abs(distanceP3toP1 - distanceP2toP3);
 
-        Point pointToMove = null;
-        Point[] remainingPoints = new Point[2];
+        Point pointOfLineAndTriangle = null;
+        Point pointOfLineAndMiddleBase = null;
 
         if (differencesBetweenSegmentsOfP1 <= differencesBetweenSegmentsOfP2 && differencesBetweenSegmentsOfP1 <= differencesBetweenSegmentsOfP3)
         {
-            pointToMove = p2;
-            remainingPoints[0] = p1;
-            remainingPoints[1] = p3;
+            pointOfLineAndTriangle = p1;
+            pointOfLineAndMiddleBase = p2.getMidpoint(p3);
         }
 
         if (differencesBetweenSegmentsOfP2 <= differencesBetweenSegmentsOfP1 && differencesBetweenSegmentsOfP2 <= differencesBetweenSegmentsOfP3)
         {
-            pointToMove = p1;
-            remainingPoints[0] = p2;
-            remainingPoints[1] = p3;
+            pointOfLineAndTriangle = p2;
+            pointOfLineAndMiddleBase = p1.getMidpoint(p3);
+
         }
 
         if (differencesBetweenSegmentsOfP3 <= differencesBetweenSegmentsOfP1 && differencesBetweenSegmentsOfP3 <= differencesBetweenSegmentsOfP2)
         {
-            pointToMove = p1;
-            remainingPoints[0] = p2;
-            remainingPoints[1] = p3;
+            pointOfLineAndTriangle = p3;
+            pointOfLineAndMiddleBase = p1.getMidpoint(p2);
         }
 
-        return null;
+        return new Line(pointOfLineAndMiddleBase, pointOfLineAndTriangle);
     }
 }

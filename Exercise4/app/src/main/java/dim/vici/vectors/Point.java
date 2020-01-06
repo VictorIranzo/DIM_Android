@@ -17,6 +17,11 @@ public class Point {
         return (float) Math.sqrt((this.y - point.y) * (this.y - point.y) + (this.x - point.x) * (this.x - point.x));
     }
 
+    public Point getMidpoint(Point point)
+    {
+        return new Point((this.x + point.x)/2, (this.y + point.y)/2);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
