@@ -48,6 +48,10 @@ public class MyView extends View {
             Triangle triangle = new Triangle(contactPoints.values());
 
             canvas.drawText("Triangle: " + triangle.getTriangleType(), 100, 100, textPaint);
+
+            Line line = triangle.GetOrientedLine();
+
+            canvas.drawLine(line.p1.x, line.p1.y, line.p2.x, line.p2.y, this.paint);
         }
 
         for (Point point : contactPoints.values())
