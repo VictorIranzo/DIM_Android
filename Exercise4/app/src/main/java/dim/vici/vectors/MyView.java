@@ -19,6 +19,8 @@ public class MyView extends View {
 
     Hashtable<Integer, Point> contactPoints = new Hashtable<Integer, Point>();
 
+    Triangle triangle;
+
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -35,6 +37,18 @@ public class MyView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawText("Number of contacts: " + contactPoints.size(), 50, 50, textPaint);
+
+        if (contactPoints.size() > 3)
+        {
+            canvas.drawText("Not a triangle!!!", 100, 100, textPaint);
+        }
+
+        if (contactPoints.size() == 3)
+        {
+            Triangle triangle = new Triangle(contactPoints.values());
+
+            canvas.drawText("Triangle: " + triangle.getTriangleType(), 100, 100, textPaint);
+        }
 
         for (Point point : contactPoints.values())
         {
